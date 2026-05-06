@@ -614,7 +614,7 @@ function renderQuestion() {
   document.getElementById('prog-label').textContent = `Question ${current + 1} of ${total}`;
   document.getElementById('prog-fill').style.width = `${((current + 1) / total) * 100}%`;
 
-  const shuffled = [...q.options].map((o, i) => ({ ...o, origIdx: i }));
+  const shuffled = [...q.options].map((o, i) => ({ ...o, origIdx: i })).sort(() => Math.random() - 0.5);
   const letters = ['A', 'B', 'C', 'D'];
 
   const html = `
