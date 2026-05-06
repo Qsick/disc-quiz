@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surrounded by Idiots — Who Are You?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --red: #E8321A;
+    --yellow: #F5C518;
+    --green: #2E9E5B;
+    --blue: #1A6BE8;
+    --bg: #0E0E0E;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --text: #F0EDE8;
+    --muted: #888;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  /* INTRO */
+  .intro {
+    text-align: center;
+    padding: 48px 24px;
+  }
+  .intro-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .intro h1 span.r { color: var(--red); }
+  .intro h1 span.y { color: var(--yellow); }
+  .intro h1 span.g { color: var(--green); }
+  .intro h1 span.b { color: var(--blue); }
+  .intro p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 36px;
+  }
+  .btn-start {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    padding: 14px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-start:hover { opacity: 0.85; }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    margin-bottom: 40px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--text);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  /* QUESTION */
+  .question-block {
+    animation: fadeUp 0.35s ease forwards;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .q-number {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 3.5vw, 1.65rem);
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 32px;
+  }
+
+  /* OPTIONS */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: left;
+  }
+  .option:hover {
+    border-color: #555;
+    background: #1e1e1e;
+  }
+  .option.selected {
+    border-color: var(--text);
+    background: #1e1e1e;
+  }
+  .option-letter {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .option-text {
+    font-size: 14px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+  }
+  .btn-nav {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-nav:hover:not(:disabled) { border-color: #777; color: var(--text); }
+  .btn-nav:disabled { opacity: 0.3; cursor: default; }
+  .btn-nav.primary {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+  .btn-nav.primary:hover { opacity: 0.85; }
+  .btn-nav.primary:disabled { opacity: 0.3; cursor: default; }
+
+  /* RESULTS */
+  .results {
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .results-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .results h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 40px;
+    line-height: 1.1;
+  }
+
+  /* BARS */
+  .score-row {
+    margin-bottom: 22px;
+  }
+  .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .score-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .score-pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .score-bar-bg {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0;
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+  }
+  .score-bar-fill.red  { background: var(--red); }
+  .score-bar-fill.yellow { background: var(--yellow); }
+  .score-bar-fill.green  { background: var(--green); }
+  .score-bar-fill.blue   { background: var(--blue); }
+
+  /* DOMINANT TYPE CARD */
+  .dominant-card {
+    margin: 36px 0;
+    padding: 28px 28px 24px;
+    border-left: 4px solid;
+    background: var(--surface);
+  }
+  .dominant-card.red   { border-color: var(--red); }
+  .dominant-card.yellow { border-color: var(--yellow); }
+  .dominant-card.green  { border-color: var(--green); }
+  .dominant-card.blue   { border-color: var(--blue); }
+  .dominant-card-top {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .dominant-card-color {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .dominant-card-color.red   { color: var(--red); }
+  .dominant-card-color.yellow { color: var(--yellow); }
+  .dominant-card-color.green  { color: var(--green); }
+  .dominant-card-color.blue   { color: var(--blue); }
+  .dominant-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .dominant-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #ccc;
+  }
+
+  /* SECONDARY TYPES */
+  .secondary-section {
+    margin-top: 28px;
+  }
+  .secondary-heading {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .secondary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .secondary-card {
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .secondary-card-color {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .secondary-card-color.red   { color: var(--red); }
+  .secondary-card-color.yellow { color: var(--yellow); }
+  .secondary-card-color.green  { color: var(--green); }
+  .secondary-card-color.blue   { color: var(--blue); }
+  .secondary-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .secondary-card p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .btn-retry {
+    display: block;
+    margin: 36px auto 0;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 11px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-retry:hover { border-color: #777; color: var(--text); }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- INTRO -->
+  <div class="intro" id="intro">
+    <div class="intro-eyebrow">Thomas Erikson · Surrounded by Idiots</div>
+    <h1>
+      Are you<br>
+      <span class="r">Red</span>, <span class="y">Yellow</span>,<br>
+      <span class="g">Green</span>, or <span class="b">Blue</span>?
+    </h1>
+    <p>Answer 20 questions honestly. There are no right or wrong answers. The result shows your four-color DISC profile scaled by dominance.</p>
+    <button class="btn-start" onclick="startQuiz()">Begin Assessment</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hidden">
+    <div class="progress-label" id="prog-label"></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+    <div id="question-area"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="hidden results"></div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    text: "When a new project lands on your desk, your first instinct is to...",
+    options: [
+      { text: "Take charge immediately and set the direction.", color: "R" },
+      { text: "Pitch the team on how exciting this could be.", color: "Y" },
+      { text: "Make sure everyone is on board before moving.", color: "G" },
+      { text: "Read everything, plan thoroughly, then act.", color: "B" }
+    ]
+  },
+  {
+    text: "In a tense meeting with disagreement, you tend to...",
+    options: [
+      { text: "State your position directly and expect resolution.", color: "R" },
+      { text: "Try to lighten the mood and find common ground energetically.", color: "Y" },
+      { text: "Listen carefully and work toward harmony.", color: "G" },
+      { text: "Stay calm and methodically lay out the facts.", color: "B" }
+    ]
+  },
+  {
+    text: "Which phrase feels most like you?",
+    options: [
+      { text: "Results matter. Everything else is noise.", color: "R" },
+      { text: "Life is too short not to have fun doing this.", color: "Y" },
+      { text: "The team matters more than any individual win.", color: "G" },
+      { text: "Do it right the first time or don't do it.", color: "B" }
+    ]
+  },
+  {
+    text: "When someone challenges a decision you made, you...",
+    options: [
+      { text: "Defend it confidently and move on quickly.", color: "R" },
+      { text: "Engage them with enthusiasm and persuade.", color: "Y" },
+      { text: "Ask if they feel heard and try to understand their concern.", color: "G" },
+      { text: "Walk through your reasoning step by step with evidence.", color: "B" }
+    ]
+  },
+  {
+    text: "Your ideal workday looks like...",
+    options: [
+      { text: "High-impact decisions, clear outcomes, minimal meetings.", color: "R" },
+      { text: "Brainstorms, conversations, spontaneous collaboration.", color: "Y" },
+      { text: "Steady, predictable, helping colleagues, no drama.", color: "G" },
+      { text: "Deep focus, detailed work, research, structured progress.", color: "B" }
+    ]
+  },
+  {
+    text: "When you give feedback to someone, you...",
+    options: [
+      { text: "Say exactly what needs to change, no sugarcoating.", color: "R" },
+      { text: "Wrap the critique in energy and encouragement.", color: "Y" },
+      { text: "Choose your words carefully so they don't feel hurt.", color: "G" },
+      { text: "Give specific, documented, evidence-based feedback.", color: "B" }
+    ]
+  },
+  {
+    text: "How do you feel about rules and established processes?",
+    options: [
+      { text: "Rules should serve outcomes. Break them if needed.", color: "R" },
+      { text: "Rules are fine but flexibility keeps things fun.", color: "Y" },
+      { text: "Processes protect people. I value consistency.", color: "G" },
+      { text: "Processes exist for good reasons. Follow them precisely.", color: "B" }
+    ]
+  },
+  {
+    text: "When things go wrong on a project, you...",
+    options: [
+      { text: "Identify the problem fast, assign accountability, fix it.", color: "R" },
+      { text: "Rally the team, reframe it as a learning opportunity.", color: "Y" },
+      { text: "Make sure nobody is panicking and keep morale steady.", color: "G" },
+      { text: "Do a thorough analysis before drawing any conclusions.", color: "B" }
+    ]
+  },
+  {
+    text: "Which criticism stings the most?",
+    options: [
+      { text: "That you're too aggressive or bossy.", color: "R" },
+      { text: "That you're scattered or don't follow through.", color: "Y" },
+      { text: "That you're passive or avoid conflict.", color: "G" },
+      { text: "That you're cold, overcritical, or too slow.", color: "B" }
+    ]
+  },
+  {
+    text: "How do you handle a tight deadline with unclear requirements?",
+    options: [
+      { text: "Make a call, move forward, correct course as needed.", color: "R" },
+      { text: "Get people energized around figuring it out together.", color: "Y" },
+      { text: "Check in with stakeholders to make sure everyone agrees.", color: "G" },
+      { text: "Push back until requirements are clarified. Ambiguity is a risk.", color: "B" }
+    ]
+  },
+  {
+    text: "At a social event with new people, you typically...",
+    options: [
+      { text: "Engage selectively with the most relevant people there.", color: "R" },
+      { text: "Work the room and leave having made ten new friends.", color: "Y" },
+      { text: "Find a few people and have a real conversation.", color: "G" },
+      { text: "Observe before engaging, prefer one-on-one depth.", color: "B" }
+    ]
+  },
+  {
+    text: "What does 'being a good teammate' mean to you?",
+    options: [
+      { text: "Performing at a high level and keeping the team competitive.", color: "R" },
+      { text: "Bringing energy, ideas, and positive momentum.", color: "Y" },
+      { text: "Being dependable and supportive no matter what.", color: "G" },
+      { text: "Delivering precise, quality work that others can rely on.", color: "B" }
+    ]
+  },
+  {
+    text: "How do you make big decisions?",
+    options: [
+      { text: "Gut + data. Decide fast and own the outcome.", color: "R" },
+      { text: "Talk it through with people whose energy I trust.", color: "Y" },
+      { text: "Weigh how it affects relationships and people first.", color: "G" },
+      { text: "Collect all the data. Model it. Reduce uncertainty first.", color: "B" }
+    ]
+  },
+  {
+    text: "Which of these is your biggest professional strength?",
+    options: [
+      { text: "Driving execution and getting things done.", color: "R" },
+      { text: "Inspiring others and generating enthusiasm.", color: "Y" },
+      { text: "Building trust and sustaining team cohesion.", color: "G" },
+      { text: "Producing thorough, high-quality analytical work.", color: "B" }
+    ]
+  },
+  {
+    text: "When someone rambles or goes off-topic in a meeting, you...",
+    options: [
+      { text: "Redirect them bluntly. Time is valuable.", color: "R" },
+      { text: "Acknowledge their tangent warmly, then steer back.", color: "Y" },
+      { text: "Let it ride a bit. Maybe it matters to them.", color: "G" },
+      { text: "Wait patiently but grow internally frustrated.", color: "B" }
+    ]
+  },
+  {
+    text: "What motivates you most at work?",
+    options: [
+      { text: "Winning. Achieving. Having measurable impact.", color: "R" },
+      { text: "Recognition, connection, and being celebrated.", color: "Y" },
+      { text: "Harmony, stability, and knowing the team is healthy.", color: "G" },
+      { text: "Mastery, accuracy, and solving hard problems correctly.", color: "B" }
+    ]
+  },
+  {
+    text: "How do you react when asked to change plans at the last minute?",
+    options: [
+      { text: "Fine, as long as someone owns the new direction.", color: "R" },
+      { text: "Adaptable. Change is just a new adventure.", color: "Y" },
+      { text: "It unsettles me a bit. I prefer stability and notice.", color: "G" },
+      { text: "Frustrated. I prepared carefully. This disrupts quality.", color: "B" }
+    ]
+  },
+  {
+    text: "Your communication style is best described as...",
+    options: [
+      { text: "Direct, brief, no filler.", color: "R" },
+      { text: "Expressive, warm, animated, story-driven.", color: "Y" },
+      { text: "Thoughtful, considerate, asks before asserting.", color: "G" },
+      { text: "Precise, detailed, evidence-backed.", color: "B" }
+    ]
+  },
+  {
+    text: "Which failure is hardest to forgive in yourself?",
+    options: [
+      { text: "Missing a result you committed to.", color: "R" },
+      { text: "Letting people down or killing the energy in a room.", color: "Y" },
+      { text: "Causing tension or damage in a relationship.", color: "G" },
+      { text: "Delivering work with an error or gap in quality.", color: "B" }
+    ]
+  },
+  {
+    text: "Which of these is most true of how others perceive you?",
+    options: [
+      { text: "Decisive and confident, sometimes intimidating.", color: "R" },
+      { text: "Energetic and fun, sometimes hard to pin down.", color: "Y" },
+      { text: "Reliable and warm, sometimes too accommodating.", color: "G" },
+      { text: "Thorough and principled, sometimes perfectionist.", color: "B" }
+    ]
+  }
+];
+
+const TYPE_INFO = {
+  R: {
+    name: "The Dominant",
+    label: "Red",
+    cls: "red",
+    summary: "You are driven, direct, and decisive. You take charge because hesitation costs results. Conflict doesn't scare you. You think in outcomes, not feelings, and you have little patience for inefficiency. Your superpower is execution under pressure. Your blind spot: you can run over people who need more time or context than you do."
+  },
+  Y: {
+    name: "The Inspiring",
+    label: "Yellow",
+    cls: "yellow",
+    summary: "You are expressive, energetic, and magnetic. People follow your enthusiasm before they follow your logic. You generate ideas fast and make rooms come alive. Your superpower is mobilizing people emotionally. Your blind spot: follow-through and detail work can drain you fast, and you may leave unfinished threads behind you."
+  },
+  G: {
+    name: "The Stable",
+    label: "Green",
+    cls: "green",
+    summary: "You are patient, loyal, and deeply invested in the people around you. You keep teams together during turbulence and make individuals feel seen. Your superpower is building long-term trust. Your blind spot: avoiding conflict can mean important things go unsaid, and change can feel threatening even when it's necessary."
+  },
+  B: {
+    name: "The Analytical",
+    label: "Blue",
+    cls: "blue",
+    summary: "You are precise, methodical, and quality-driven. You want to get things right, not just done. You protect teams from costly errors by demanding evidence and rigor. Your superpower is catching what others miss. Your blind spot: analysis paralysis and perfectionism can slow momentum, and emotional intelligence may need deliberate cultivation."
+  }
+};
+
+let current = 0;
+let scores = { R: 0, Y: 0, G: 0, B: 0 };
+let answers = new Array(QUESTIONS.length).fill(null);
+
+function startQuiz() {
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const total = QUESTIONS.length;
+
+  document.getElementById('prog-label').textContent = `Question ${current + 1} of ${total}`;
+  document.getElementById('prog-fill').style.width = `${((current + 1) / total) * 100}%`;
+
+  const shuffled = [...q.options].map((o, i) => ({ ...o, origIdx: i }));
+  const letters = ['A', 'B', 'C', 'D'];
+
+  const html = `
+    <div class="question-block" key="${current}">
+      <div class="q-number">Question ${current + 1}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="options">
+        ${shuffled.map((opt, i) => `
+          <div class="option ${answers[current] === opt.color ? 'selected' : ''}"
+               onclick="selectAnswer('${opt.color}', this)">
+            <span class="option-letter">${letters[i]}</span>
+            <span class="option-text">${opt.text}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="nav">
+        <button class="btn-nav" onclick="goBack()" ${current === 0 ? 'disabled' : ''}>Back</button>
+        <button class="btn-nav primary" id="btn-next" onclick="goNext()"
+          ${answers[current] === null ? 'disabled' : ''}>${current === total - 1 ? 'See Results' : 'Next'}</button>
+      </div>
+    </div>
+  `;
+
+  const area = document.getElementById('question-area');
+  area.innerHTML = html;
+}
+
+function selectAnswer(color, el) {
+  answers[current] = color;
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-next').disabled = false;
+}
+
+function goNext() {
+  if (answers[current] === null) return;
+  if (current < QUESTIONS.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function goBack() {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  // tally
+  scores = { R: 0, Y: 0, G: 0, B: 0 };
+  answers.forEach(a => { if (a) scores[a]++; });
+
+  const total = QUESTIONS.length;
+  const pct = c => Math.round((scores[c] / total) * 100);
+
+  const sorted = ['R', 'Y', 'G', 'B'].sort((a, b) => scores[b] - scores[a]);
+  const dominant = sorted[0];
+  const secondary = sorted.slice(1);
+  const info = TYPE_INFO[dominant];
+
+  const colorLabel = (c) => ({R:'red',Y:'yellow',G:'green',B:'blue'}[c]);
+
+  document.getElementById('quiz').classList.add('hidden');
+  const el = document.getElementById('results');
+  el.classList.remove('hidden');
+
+  el.innerHTML = `
+    <div class="results-eyebrow">Your Color Profile</div>
+    <h2>You are <span style="color:var(--${colorLabel(dominant)})">${info.label}</span></h2>
+
+    <div class="score-row">
+      <div class="score-header">
+        <span class="score-label" style="color:var(--red)">Red · Dominant</span>
+        <span class="score-pct" style="color:var(--red)">${pct('R')}%</span>
+      </div>
+      <div class="score-bar-bg"><div class="score-bar-fill red" id="bar-R"></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-header">
+        <span class="score-label" style="color:var(--yellow)">Yellow · Inspiring</span>
+        <span class="score-pct" style="color:var(--yellow)">${pct('Y')}%</span>
+      </div>
+      <div class="score-bar-bg"><div class="score-bar-fill yellow" id="bar-Y"></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-header">
+        <span class="score-label" style="color:var(--green)">Green · Stable</span>
+        <span class="score-pct" style="color:var(--green)">${pct('G')}%</span>
+      </div>
+      <div class="score-bar-bg"><div class="score-bar-fill green" id="bar-G"></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-header">
+        <span class="score-label" style="color:var(--blue)">Blue · Analytical</span>
+        <span class="score-pct" style="color:var(--blue)">${pct('B')}%</span>
+      </div>
+      <div class="score-bar-bg"><div class="score-bar-fill blue" id="bar-B"></div></div>
+    </div>
+
+    <div class="dominant-card ${colorLabel(dominant)}">
+      <div class="dominant-card-top">
+        <span class="dominant-card-color ${colorLabel(dominant)}">${info.label} · Dominant Type</span>
+      </div>
+      <h3>${info.name}</h3>
+      <p>${info.summary}</p>
+    </div>
+
+    <div class="secondary-section">
+      <div class="secondary-heading">Your Secondary Colors</div>
+      <div class="secondary-grid">
+        ${secondary.map(c => {
+          const si = TYPE_INFO[c];
+          const cl = colorLabel(c);
+          return `
+            <div class="secondary-card">
+              <div class="secondary-card-color ${cl}">${si.label} · ${pct(c)}%</div>
+              <h4>${si.name}</h4>
+              <p>${si.summary.split('.')[0]}.</p>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <button class="btn-retry" onclick="retakeQuiz()">Retake Assessment</button>
+  `;
+
+  // animate bars after a brief delay
+  setTimeout(() => {
+    ['R','Y','G','B'].forEach(c => {
+      const bar = document.getElementById(`bar-${c}`);
+      if (bar) bar.style.width = pct(c) + '%';
+    });
+  }, 100);
+}
+
+function retakeQuiz() {
+  current = 0;
+  scores = { R: 0, Y: 0, G: 0, B: 0 };
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  renderQuestion();
+}
+</script>
+</body>
+</html>
